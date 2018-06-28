@@ -1,5 +1,6 @@
 <template>
-    <h3>{{username}}</h3>
+    <h3>{{username}}<i-button type="ghost" @click="addPsp">添加</i-button></h3>
+
     <div>
         <i-table height="560" :columns="columns" :data="bls"></i-table>
     </div>
@@ -13,7 +14,7 @@
     import Vue from 'vue';
     Vue.component('descriptionDetail',descriptionDetail);
     export default {
-        props:['userid','username'],
+        props:['userid','username','useruid'],
         name: "userBl",
         data(){
             return {
@@ -61,6 +62,13 @@
                 ajax.get(window.apiPath+'user/'+userid+'/prescriptions/').then(function(result){
                     _self.bls=result.data;
                 })
+            },
+            addPsp(){
+                if(!this.useruid){
+                    this.$Message.error('无法找到用户uid');
+                    return;
+                }
+                this.$router.go('/prescription/add?uid='+this.useruid);
             }
         },
         watch:{

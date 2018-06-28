@@ -9,7 +9,7 @@
                     <span slot="prepend">处方名称</span>
                 </i-input>
             </i-col>
-            <i-col span="5" >
+            <i-col span="4" >
                 <i-input :value.sync="params.username">
                     <span slot="prepend">人员</span>
                 </i-input>
@@ -19,8 +19,9 @@
                     <span slot="prepend">包含药名</span>
                 </i-input>
             </i-col>
-            <i-col span="2">
-                <i-button type="primary" @click="query()">查询</i-button>
+            <i-col span="3">
+                <i-button size="small" type="primary" @click="query()"><Icon type="search" size="20"></Icon></i-button>
+                <i-button size="small" type="warning" @click="toAdd"><Icon type="plus-round" size="20"></Icon></i-button>
             </i-col>
         </Row>
     </div>
@@ -100,6 +101,9 @@
             },
             query(){
                 this.findData();
+            },
+            toAdd(){
+                this.$router.go('/prescription/add');
             }
         },
         created(){

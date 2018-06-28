@@ -5,8 +5,20 @@
                 <Icon type="ios-person" size="20" style="margin-bottom:-5px"></Icon>
                 人员信息
             </p>
-            <div v-if="!id">
+            <div v-if="!formData.user.uid">
                 <Form-item label="姓名">
+                    <!--<AutoComplete
+                            v-model="formData.user.name"
+                            @on-focus="focusUser"
+                            @on-search="listUser"
+                            placeholder="输入姓名..."
+                            style="width:200px">
+                            <Option v-for="option in userList" :value="option.name" :key="option.name" @click="selectUser(option)">
+                                <span class="demo-auto-complete-title">{{ option.name }}</span>
+                                <span class="demo-auto-complete-count">({{ option.uid }})</span>
+                            </Option>
+                    </AutoComplete>
+                    <Button type="primary" shape="circle" icon="ios-search" @click="listUser"></Button>-->
                     <i-input :value.sync="formData.user.name" placeholder="请输入姓名"></i-input>
                 </Form-item>
                 <Form-item label="年龄">
@@ -22,9 +34,10 @@
                     <i-input :value.sync="formData.user.phone" placeholder="请输入手机号"></i-input>
                 </Form-item>
             </div>
-            <div v-if="id">
+            <div v-if="!!formData.user.uid">
                 <Form-item label="姓名">
                     {{formData.user.name}}({{formData.user.uid}})
+                    <i-button type='ghost' size='small' style="margin-left:50px;" @click="resetUser" v-if="!id">重置</i-button>
                 </Form-item>
                 <Form-item label="年龄">
                     {{formData.user.age}}
@@ -98,6 +111,7 @@
                 id:this.$route.params.id,
                 readonly:false,
                 psp:{},
+                userList:[],
                 formData: {
                     name: '',
                     description: '',
@@ -169,6 +183,27 @@
                 }).catch(function(){
                     _self.$Message.error('提交失败!');
                 });
+            },
+            listUser(){
+                var _self=this;
+                if(!!this.formData.user.name){
+                    this.userList=[];
+                    return;
+                }
+                ajax(window.apiPath+'users/search/'+this.formData.user.name).then(function(res){
+                    _self.userList=res.data;
+                })
+            },
+            focusUser:function(){
+                this.userList=[];
+            },
+            selectUser:function(user){
+                this.formData.user=objTools.clone(user);
+                this.psp.user=objTools.clone(user);
+            },
+            resetUser:function(){
+                this.formData.user={};
+                this.psp.user={};
             }
         },
         created(){
@@ -178,6 +213,12 @@
                     _self.psp=result.data;
                     _self.formData=objTools.clone(_self.psp);
                 });
+            }
+            if(!!this.$router._currentRoute.query.uid){
+                ajax.get(window.apiPath+'user/'+encodeURIComponent(this.$router._currentRoute.query.uid)).then(function(result){
+                    _self.psp.user=result.data;
+                    _self.formData.user=objTools.clone(result.data);
+                })
             }
         }
     }

@@ -3,7 +3,7 @@
         <i-table height="560" :columns="columns" :data="datas"></i-table>
     </div>
     <Modal :visible.sync="isShowBl" title="历史病历" width="800">
-        <user-bl :userid.sync="userId" :username.sync="username"></user-bl>
+        <user-bl :userid.sync="userId" :username.sync="username" :useruid.sync="useruid"></user-bl>
     </Modal>
 </template>
 <script>
@@ -17,6 +17,7 @@
             return {
                 username:null,
                 userId:null,
+                useruid:null,
                 isShowBl:false,
                 columns: [
                     {
@@ -71,6 +72,7 @@
             show:function(index){
                 this.userId=this.datas[index].id;
                 this.username=this.datas[index].name;
+                this.useruid=this.datas[index].uid;
                 this.isShowBl=true;
             }
         }
